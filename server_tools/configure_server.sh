@@ -1,5 +1,7 @@
 #!/bin/bash
 
+TEST=0
+
 clear; 
 
 echo -e "
@@ -28,7 +30,7 @@ Thankyou for use it.
 
 "
 
-echo "Press enter to continue..."
+echo "Press ENTER to continue..."
 
 read
 
@@ -40,11 +42,74 @@ echo "But first, we need to configure some things..."
 
 echo "We need to disable SELINUX."
 
-echo "Press enter to disable SELINUX..."
+echo "Press ENTER to disable SELINUX..."
 
 read
 
-cat selinux.conf > /etc/selinux/conf
+if [ $TEST == 1 ] ; then
+	cat selinux.conf > /etc/selinux/conf
+fi
+clear;
+
+echo "Ok, the SELINUX is now disable, but... to get work, we need to restart the server. :("
+echo "But wait, we need to install and configure more things before reboot."
+echo "Now, we need to install all software."
+echo "1. step: we're going to update the server."
+echo "Press ENTER to continue..."
+read
+
+echo "making updates, please wait..."
+
+if [ $TEST == 1 ] ; then
+	yum update -y > /var/log/configureserver.log 
+	yum upgrade -y >> /var/log/configureserver.log
+fi
+
+echo "Ok, we 're done. Now, continue to next step."
+
+echo "2. step: Install some help soft..."
+
+if [ $TEST == 1 ] ; then
+	yum install wget mlocate vim telnet -y >> /var/log/configureserver.log
+fi
+
+echo "Ok, now, we need to install Epel repository."
+
+echo "3. step: Install epel..."
+
+if [ $TEST == 1 ] ; then
+	wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -O /tmp/epel-release-latest-7.noarch.rpm >> /var/log/configureserver.log
+	yum install /tmp/epel-release-latest-7.noarch.rpm -y >> /var/log/configureserver.log
+fi
+
+echo "Awesome. Now, we're going to install the server soft."
+
+echo "Press ENTER to continue..."
+
+read
+
+clear ;
+
+echo "4. step: Install server soft..."
+
+echo "#Installing HTTP, please wait..."
+
+if [ $TEST == 1 ] ; then
+	yum install httpd -y  >> /var/log/configureserver.log
+fi
+
+echo "DONE"
+
+echo "#Installing MariaDB, please wait..."
+
+if [ $TEST == 1 ] ; then
+	yum install mariadb-server -y  >> /var/log/configureserver.log
+fi
+
+echo "DONE"
+
+
+
 
 
 
